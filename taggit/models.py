@@ -37,7 +37,12 @@ class TagBase(models.Model):
     slug = models.SlugField(verbose_name=_('Slug'), unique=True, max_length=100)
 
     def __str__(self):
-        return self.name
+        # If MySQLdb hasn't returned unicode (returned str instead), we need
+        # to decode to utf8. An example of this would be MySQL collate utf8_bin.
+        if isinstance(self.name, str):
+            return self.name.decode('utf8')
+        else:
+            return self.name
 
     class Meta:
         abstract = True
